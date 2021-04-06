@@ -1,0 +1,12 @@
+{
+  "name": "Agenda",
+  "displayName": "Agenda",
+  "expo": {
+    "name": "Agenda",
+    "slug": "Agenda",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
