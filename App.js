@@ -54,7 +54,7 @@ export default function App() {
         <SafeAreaView style={styles.modal}>
           <StatusBar backgroundColor='#171d31'/>
           <View style={styles.modalLeader}>
-            <TouchableOpacity onPress={() => setOpen(false)}>
+            <TouchableOpacity onPress={() => {setOpen(false),setInput('')}}>
               <Ionicons style={marginleft= 5, marginRight = 5} name="arrow-back" size={40} color='#FFF'/>
             </TouchableOpacity>
 

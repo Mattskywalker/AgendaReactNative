@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {View, Text,StyleSheet} from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Animatable from 'react-native-animatable'
+import { render } from 'react-dom'
 
+
+
+const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity);
 
 
 
 export default function TaskList({data}){
+
+    const [cor,setCor] = useState('#FFF')
+    
     return(
         
         <Animatable.View 
@@ -15,9 +22,9 @@ export default function TaskList({data}){
         animation="bounceIn"
         useNativeDriver
         >
-            <TouchableOpacity>
-                <Ionicons name='md-checkmark-circle' size={30} color='#FFF'/>
-            </TouchableOpacity>
+            <AnimatableButton onPress={() => {setCor('#65FA61')}}>
+                <Ionicons name='md-checkmark-circle' size={30} color={cor}/>
+            </AnimatableButton>
             <View>
                 <Text style={styles.task}>{data.task}</Text>
             </View>
