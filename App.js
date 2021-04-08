@@ -6,16 +6,28 @@ import TaskList from './src/components/TaskList';
 import * as Animatable from 'react-native-animatable'
 
 const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
+const AnimatableTextInput = Animatable.createAnimatableComponent(TextInput)
 
 export default function App() {
-  const [task,setTask] = useState([
-    {key: 1,task: 'Comprar pão'},
-    {key: 2,task: 'Farmar no clash'},
-    {key: 3,task: 'Ligar pra Lua'},
-    {key: 4,task: 'Aprender React'},
-  ])
-
+  const [task,setTask] = useState([])
   const [open, setOpen] = useState(false)
+  const [input, setInput] = useState('')
+
+  function salvar(){
+    if(input === '')return;
+
+    const data = {
+      key: input,
+      task: input,
+    };
+
+    setTask([...task, data]);
+    setOpen(false);
+    setInput('');
+
+
+
+  }
   return (
     <SafeAreaView style={styles.container}>
 
@@ -46,22 +58,26 @@ export default function App() {
               <Ionicons style={marginleft= 5, marginRight = 5} name="arrow-back" size={40} color='#FFF'/>
             </TouchableOpacity>
 
-            <Text style={styles.modalTitle}></Text>
+            <Text style={styles.modalTitle}>Nova tarefa</Text>
           </View>
 
-          <View style={styles.modalBoddy} animation="fadeInUp">
-            <TextInput
+          <Animatable.View style={styles.modalBoddy} animation ="fadeInUp" duration={1500}>
+            <AnimatableTextInput
+            animation="bounceIn"
+            duration={2000}
             placeholder="O que precisa fazer hoje ?"
             placeholderTextColor='grey'
             multiline={true}
-            
+            value={input}
+            onChangeText={(texto) => setInput(texto)}
             style={styles.input}
+            autoCorrect={true}
             />
 
-            <TouchableOpacity style={styles.addButton}>
+            <AnimatableButton style={styles.addButton} onPress={salvar} animation="bounceIn" duration={1500}>
               <Text style={styles.addButtonText}>Salvar</Text>
-            </TouchableOpacity>
-          </View>
+            </AnimatableButton>
+          </Animatable.View>
         </SafeAreaView>
       </Modal>
 
@@ -126,10 +142,12 @@ const styles = StyleSheet.create({
   },
   modalTitle:{
     marginLeft:15,
-    fontSize: 20,
+    fontSize: 23,
     color: '#FFF',
+    
   },
   modalBoddy:{
+    flex: 1,
     marginTop: 15,
     
 
@@ -142,7 +160,7 @@ const styles = StyleSheet.create({
     padding: 30,
     height: 200,
     textAlignVertical: 'top',
-    color: '#FFF',
+    color: '#000',
     borderRadius: 30,
     
   },
