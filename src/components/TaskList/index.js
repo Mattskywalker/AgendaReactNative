@@ -16,7 +16,7 @@ export default function TaskList({data}){
         useNativeDriver
         >
             <TouchableOpacity>
-                <Ionicons name='md-checkmark-circle' size={30} color='#121212'/>
+                <Ionicons name='md-checkmark-circle' size={30} color='#FFF'/>
             </TouchableOpacity>
             <View>
                 <Text style={styles.task}>{data.task}</Text>
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#3399ff',
-        borderRadius: 30,
-        padding: 7,
+        borderRadius: 20,
+        padding: 10,
         elevation: 1.5,
         shadowColor: '#000',
         shadowOpacity: 0.2,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     task:{
         color: '#FFF',
         fontSize: 20,
-        paddingRight: 20,
+        paddingRight: 30,
         paddingLeft: 8,
 
     }
