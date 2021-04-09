@@ -15,6 +15,8 @@ export default function TaskList({data}){
 
     const [cor,setCor] = useState('#FFF')
     
+
+
     return(
         
         <Animatable.View 
@@ -23,7 +25,7 @@ export default function TaskList({data}){
         useNativeDriver
         >
             <AnimatableButton onPress={() => {setCor('#65FA61')}}>
-                <Ionicons name='md-checkmark-circle' size={30} color={cor}/>
+                <Ionicons name='md-checkmark-circle' size={30} color={cor}/> 
             </AnimatableButton>
             <View>
                 <Text style={styles.task}>{data.task}</Text>
