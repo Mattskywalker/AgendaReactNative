@@ -14,8 +14,15 @@ const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity);
 export default function TaskList({data}){
 
     const [cor,setCor] = useState('#FFF')
-    
+    const [ok, setOk] = useState(false) 
 
+    function changeColor(){
+        if(cor === '#FFF'){
+            setCor('#00FF00');
+        }else{
+            setCor('#FFF');
+        }
+    }
 
     return(
         
@@ -24,7 +31,8 @@ export default function TaskList({data}){
         animation="bounceIn"
         useNativeDriver
         >
-            <AnimatableButton onPress={() => {setCor('#65FA61')}}>
+            <AnimatableButton 
+            onPressIn={() => {changeColor()}}>
                 <Ionicons name='md-checkmark-circle' size={30} color={cor}/> 
             </AnimatableButton>
             <View>
