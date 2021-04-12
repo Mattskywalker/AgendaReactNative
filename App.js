@@ -56,22 +56,15 @@ export default function App() {
     setInput('');
   }
 
-  const saveButton = useCallback((data) => {
-    
-    
-    if(data.cor === '#FFF'){
-      data.cor = '#00FF00'
-    }
+  const update = useCallback((data) => {
     //alert("data.cor: " + data.cor);
-
-    
     const finded = task.filter(r => r !== '');
-
+    setTask(finded);
     /*
     finded.forEach(element => {
       alert("keys com as data.cor verde: " + data.key);
     });*/
-    setTask(finded);
+    
   })
 
   const deletarNota = useCallback((data) => {
@@ -98,7 +91,7 @@ export default function App() {
       showsHorizontalScrollIndicator={false}
       data={task}
       keyExtractor={(item) => String(item.key)}
-      renderItem={({item}) => <TaskList data={item} deletarNota={deletarNota} saveButton={saveButton}/>}
+      renderItem={({item}) => <TaskList data={item} deletarNota={deletarNota} update={update}/>}
 
       />
       <AnimatableButton  useNativeDriver

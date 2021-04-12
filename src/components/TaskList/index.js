@@ -10,14 +10,17 @@ const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity);
 
 
 
-export default function TaskList({data, deletarNota,saveButton}){
+export default function TaskList({data, deletarNota,update}){
 
     const [color,setColor] = useState(data.cor)
     function mudarCor(data){
         
-        saveButton(data);
-        setColor(data.cor);
+        if(data.cor === '#FFF'){
+            data.cor = '#00FF00'
+        }
         
+        setColor(data.cor);
+        update(data);
         
     }
 
