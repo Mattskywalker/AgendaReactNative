@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginHorizontal:15,
     marginTop: 30,
-    backgroundColor:'#FFF',
+    backgroundColor:'#1C1C1C',
     padding: 30,
     height: 200,
     textAlignVertical: 'top',
