@@ -6,22 +6,19 @@ import * as Animatable from 'react-native-animatable'
 import { render } from 'react-dom'
 
 
-
 const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity);
 
 
 
-export default function TaskList({data}){
+export default function TaskList({data, deletarNota,saveButton}){
 
-    const [cor,setCor] = useState('#FFF')
-    const [ok, setOk] = useState(false) 
-
-    function changeColor(){
-        if(cor === '#FFF'){
-            setCor('#00FF00');
-        }else{
-            setCor('#FFF');
-        }
+    const [color,setColor] = useState(data.cor)
+    function mudarCor(data){
+        
+        saveButton(data);
+        setColor(data.cor);
+        
+        
     }
 
     return(
@@ -31,10 +28,14 @@ export default function TaskList({data}){
         animation="bounceIn"
         useNativeDriver
         >
-            <AnimatableButton 
-            onPressIn={() => {changeColor()}}>
-                <Ionicons name='md-checkmark-circle' size={30} color={cor}/> 
-            </AnimatableButton>
+            <TouchableOpacity
+            changeColor
+            onLongPress={() => deletarNota(data)}
+            onPress={() => mudarCor(data)}
+            activeOpacity={0.6}
+            >
+          <Ionicons name="md-checkmark-circle" size={40} color={color}/>
+            </TouchableOpacity>
             <View>
                 <Text style={styles.task}>{data.task}</Text>
             </View>
@@ -63,8 +64,9 @@ const styles = StyleSheet.create({
     },
     task:{
         color: '#FFF',
+
         fontSize: 20,
-        paddingRight: 30,
+        paddingRight: 40,
         paddingLeft: 8,
 
     }

@@ -1,33 +1,90 @@
 import { StatusBar } from 'expo-status-bar';
-import React,{useState} from 'react';
-import { StyleSheet, Text, View, SafeAreaView,TouchableOpacity, FlatList, Modal, TextInput} from 'react-native';
+import React,{useState, useCallback, useEffect} from 'react';
+import { StyleSheet, Text, View, SafeAreaView,TouchableOpacity, FlatList, Modal, TextInput, Alert} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import TaskList from './src/components/TaskList';
 import * as Animatable from 'react-native-animatable'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
 const AnimatableTextInput = Animatable.createAnimatableComponent(TextInput)
+
+
 
 export default function App() {
   const [task,setTask] = useState([])
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
 
+
+  //carregando tarefas persistidas 
+  
+  useEffect(()=>{
+
+    async function loadTasks(){
+      const taskStorage = await AsyncStorage.getItem('@task');
+      
+      if(taskStorage){
+        setTask(JSON.parse(taskStorage));
+      }
+    }
+
+    loadTasks();
+
+  },[]);
+
+  useEffect(()=> {
+    
+    async function saveTasks(){
+      await AsyncStorage.setItem('@task',JSON.stringify(task));
+    }
+
+    saveTasks();
+
+  },[task])
+  
+
   function salvar(){
     if(input === '')return;
-
     const data = {
       key: input,
       task: input,
+      cor: '#FFF',
     };
-
     setTask([...task, data]);
     setOpen(false);
     setInput('');
-
-
-
   }
+
+  const saveButton = useCallback((data) => {
+    
+    
+    if(data.cor === '#FFF'){
+      data.cor = '#00FF00'
+    }
+    //alert("data.cor: " + data.cor);
+
+    
+    const finded = task.filter(r => r !== '');
+
+    /*
+    finded.forEach(element => {
+      alert("keys com as data.cor verde: " + data.key);
+    });*/
+    setTask(finded);
+  })
+
+  const deletarNota = useCallback((data) => {
+
+    const finded = task.filter(r => r.key !== data.key);
+    setTask(finded);
+    alert("Tarefa: \n\n" + data.key + "\n\n deletada.")
+    
+
+
+  })
+
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -41,9 +98,13 @@ export default function App() {
       showsHorizontalScrollIndicator={false}
       data={task}
       keyExtractor={(item) => String(item.key)}
-      renderItem={({item}) => <TaskList data={item}/>}
+      renderItem={({item}) => <TaskList data={item} deletarNota={deletarNota} saveButton={saveButton}/>}
 
       />
+      <AnimatableButton  useNativeDriver
+      animation="bounceInUp" style={styles.deleteAllButton} onPress={()=>{setTask('')}}>
+        <Text fontSize={1000}>Apagar todas</Text>
+      </AnimatableButton>
 
       <Modal 
       animationType="slide"
@@ -74,7 +135,7 @@ export default function App() {
             autoCorrect={true}
             />
 
-            <AnimatableButton style={styles.addButton} onPress={salvar} animation="bounceIn" duration={1500}>
+            <AnimatableButton style={styles.addButton} onPress={salvar}>
               <Text style={styles.addButtonText}>Salvar</Text>
             </AnimatableButton>
           </Animatable.View>
@@ -96,6 +157,15 @@ export default function App() {
   )
 }
 
+
+
+
+
+
+
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -103,10 +173,10 @@ const styles = StyleSheet.create({
     
   },
   title:{
-    marginTop: 38,
+    marginTop: 45,
     fontSize:30,
     textAlign: 'center',
-    paddingBottom:30,
+    paddingBottom:20,
     color:'#FFF'
   },
   fab:{
@@ -175,6 +245,27 @@ const styles = StyleSheet.create({
   },
   addButtonText:{
     fontSize: 20,
+  },
+
+  deleteAllButton:{
+    position:'absolute',
+    
+    width:150,
+    height:60,
+    backgroundColor: '#0094FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+    left: 25,
+    bottom: 25,
+    elevation: 2,
+    zIndex: 9,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset:{
+      width: 1,
+      height: 3,
+    }
   }
 
   
