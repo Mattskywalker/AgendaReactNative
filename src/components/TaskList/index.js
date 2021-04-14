@@ -1,76 +1,54 @@
 import React, { useState } from 'react'
-import {View, Text,StyleSheet} from 'react-native'
+import {View, Text,StyleSheet, Alert} from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Animatable from 'react-native-animatable'
-import { render } from 'react-dom'
 
+import {styleIndex} from '../../styles/StyleIndex'
+import {taskState} from '../../enums/TaskState'
 
-const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity);
+export default function TaskList({data, deletarNota,update,showToastMessage}){
 
-
-
-export default function TaskList({data, deletarNota,update}){
-
-    const [color,setColor] = useState(data.cor)
+    const [color,setColor] = useState(data.color)
+    
     function mudarCor(data){
-        
-        if(data.cor === '#FFF'){
-            data.cor = '#00FF00'
+
+        if(data.color === '#FFF'){
+            data.color = '#00FF00';
         }
+        setColor(data.color);
         
-        setColor(data.cor);
-        update(data);
+    }
+
+    const changeStatus = (data) => {
+        
+        if(data.taskState === taskState.NOTFINISHED){
+            data.taskState = taskState.FINISHED;
+            mudarCor(data);
+            update(data);
+            showToastMessage("Tarefa concluida!")
+        }
         
     }
 
     return(
         
         <Animatable.View 
-        style={styles.container}
+        style={styleIndex.container}
         animation="bounceIn"
         useNativeDriver
         >
             <TouchableOpacity
             changeColor
             onLongPress={() => deletarNota(data)}
-            onPress={() => mudarCor(data)}
+            onPress={() => changeStatus(data)}// muda a cor do botão check
             activeOpacity={0.6}
             >
-          <Ionicons name="md-checkmark-circle" size={40} color={color}/>
+          <Ionicons name="md-checkmark-circle" size={45} color={color}/>
             </TouchableOpacity>
             <View>
-                <Text style={styles.task}>{data.task}</Text>
+                <Text style={styleIndex.task}>{data.task}</Text>
             </View>
         </Animatable.View>
     )
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        margin: 8,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#3399ff',
-        borderRadius: 20,
-        padding: 10,
-        elevation: 1.5,
-        shadowColor: '#000',
-        shadowOpacity: 0.2,
-        shadowOffset:{
-            width: 1,
-            height: 3,
-        }
-        
-
-    },
-    task:{
-        color: '#FFF',
-
-        fontSize: 20,
-        paddingRight: 40,
-        paddingLeft: 8,
-
-    }
-})
