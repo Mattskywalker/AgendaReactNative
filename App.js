@@ -1,17 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useState, useCallback, useEffect} from 'react';
-import { StyleSheet, Text, View, SafeAreaView,TouchableOpacity, FlatList, Modal, TextInput, Alert} from 'react-native';
+import { ToastAndroid , Text, View, SafeAreaView,TouchableOpacity,
+   FlatList, Modal, TextInput, Alert} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import TaskList from './src/components/TaskList';
 import * as Animatable from 'react-native-animatable'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {styleApp} from './src/styles/StyleApp'
+import {taskState} from './src/enums/TaskState'
 const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
 const AnimatableTextInput = Animatable.createAnimatableComponent(TextInput)
 
 
 
-export default function App() {
+export default function App(){
   const [task,setTask] = useState([])
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
@@ -20,7 +23,7 @@ export default function App() {
   //carregando tarefas persistidas 
   
   useEffect(()=>{
-
+    
     async function loadTasks(){
       const taskStorage = await AsyncStorage.getItem('@task');
       
@@ -43,47 +46,87 @@ export default function App() {
 
   },[task])
   
+  //toast
+  const showToastMessage = (string) =>{
+
+    ToastAndroid.showWithGravity(string,400,ToastAndroid.BOTTOM);
+
+  }
 
   function salvar(){
     if(input === '')return;
     const data = {
       key: input,
       task: input,
-      cor: '#FFF',
+      color: '#FFF',
+      taskState: taskState.NOTFINISHED,
     };
+
     setTask([...task, data]);
     setOpen(false);
     setInput('');
+    showToastMessage("Nova tarefa adicionada com sucesso");
   }
 
   const update = useCallback((data) => {
+
     //alert("data.cor: " + data.cor);
     const finded = task.filter(r => r !== '');
     setTask(finded);
-    /*
-    finded.forEach(element => {
-      alert("keys com as data.cor verde: " + data.key);
-    });*/
-    
+
   })
 
-  const deletarNota = useCallback((data) => {
+  const deletarNota = useCallback((data) => {//apaga tarefa escolhida atravez do onLongPress;
 
+    const aspas = '"';
     const finded = task.filter(r => r.key !== data.key);
-    setTask(finded);
-    alert("Tarefa: \n\n" + data.key + "\n\n deletada.")
+
+    Alert.alert("Deseja apagar esta tarefa?",
+    "A seguinte tarefa será deletada: \n\n"+ aspas + data.key + aspas,
+    [
+      {
+        text: "Cancelar",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: () => {
+        setTask(finded);
+        showToastMessage("Tarefa deletada com sucesso")
+      } }// apaga ao dizer OK
+    ]
+    )
     
-
-
   })
+
+  const deletarTodas = () => {
+    
+    if(task.length === 0){return}
+    Alert.alert("Deseja apagar todas as tarefas?",
+    "Todas as tarefas registradas serão deletadas, deseja prosseguir?",
+    [
+      {
+        text: "Cancelar",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: () => {
+        //alert(task.length)
+        setTask([]);
+        showToastMessage("Todas as tarefas foram deletadas");
+        
+      } }// apaga ao dizer OK
+    ]
+    )
+  }
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    
+    <SafeAreaView style={styleApp.container}>
 
       <StatusBar backgroundColor='#171d31' barStyle="ligth-content"/>
-      <View styles={styles.content}>
-        <Text style={styles.title}>Minhas Tarefas</Text>
+      <View styles={styleApp.content}>
+        <Text style={styleApp.title}>Minhas Tarefas</Text>
       </View>
 
       <FlatList
@@ -91,11 +134,12 @@ export default function App() {
       showsHorizontalScrollIndicator={false}
       data={task}
       keyExtractor={(item) => String(item.key)}
-      renderItem={({item}) => <TaskList data={item} deletarNota={deletarNota} update={update}/>}
+      renderItem={({item}) => <TaskList data={item} showToastMessage={showToastMessage}
+       deletarNota={deletarNota} update={update}/>}
 
       />
       <AnimatableButton  useNativeDriver
-      animation="bounceInUp" style={styles.deleteAllButton} onPress={()=>{setTask('')}}>
+      animation="bounceInUp" style={styleApp.deleteAllButton} onPress={()=>{deletarTodas()}}>
         <Text fontSize={1000}>Apagar todas</Text>
       </AnimatableButton>
 
@@ -105,17 +149,17 @@ export default function App() {
       transparent={false}
       visible={open}
       >
-        <SafeAreaView style={styles.modal}>
+        <SafeAreaView style={styleApp.modal}>
           <StatusBar backgroundColor='#171d31'/>
-          <View style={styles.modalLeader}>
+          <View style={styleApp.modalLeader}>
             <TouchableOpacity onPress={() => {setOpen(false),setInput('')}}>
               <Ionicons style={marginleft= 5, marginRight = 5} name="arrow-back" size={40} color='#FFF'/>
             </TouchableOpacity>
 
-            <Text style={styles.modalTitle}>Nova tarefa</Text>
+            <Text style={styleApp.modalTitle}>Nova tarefa</Text>
           </View>
 
-          <Animatable.View style={styles.modalBoddy} animation ="fadeInUp" duration={1500}>
+          <Animatable.View style={styleApp.modalBoddy} animation ="fadeInUp" duration={1500}>
             <AnimatableTextInput
             animation="bounceIn"
             duration={2000}
@@ -124,19 +168,19 @@ export default function App() {
             multiline={true}
             value={input}
             onChangeText={(texto) => setInput(texto)}
-            style={styles.input}
+            style={styleApp.input}
             autoCorrect={true}
             />
 
-            <AnimatableButton style={styles.addButton} onPress={salvar}>
-              <Text style={styles.addButtonText}>Salvar</Text>
+            <AnimatableButton style={styleApp.addButton} onPress={salvar}>
+              <Text style={styleApp.addButtonText}>Salvar</Text>
             </AnimatableButton>
           </Animatable.View>
         </SafeAreaView>
       </Modal>
 
       <AnimatableButton 
-      style={styles.fab}
+      style={styleApp.fab}
       useNativeDriver
       animation="bounceInUp"
       duration={1500}
@@ -150,118 +194,3 @@ export default function App() {
   )
 }
 
-
-
-
-
-
-
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#171D31',
-    
-  },
-  title:{
-    marginTop: 45,
-    fontSize:30,
-    textAlign: 'center',
-    paddingBottom:20,
-    color:'#FFF'
-  },
-  fab:{
-
-    position:'absolute',
-    width:60,
-    height:60,
-    backgroundColor: '#0094FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 31,
-    right: 25,
-    bottom: 25,
-    elevation: 2,
-    zIndex: 9,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset:{
-      width: 1,
-      height: 3,
-    }
-  },
-
-  modal:{
-    flex: 1,
-    backgroundColor: '#171d31',
-  },
-  modalLeader:{ 
-    marginLeft: 15,
-    marginTop: 11,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modalTitle:{
-    marginLeft:15,
-    fontSize: 23,
-    color: '#FFF',
-    
-  },
-  modalBoddy:{
-    flex: 1,
-    marginTop: 15,
-    
-
-  },
-  input:{
-    fontSize: 20,
-    marginHorizontal:15,
-    marginTop: 30,
-    backgroundColor:'#1C1C1C',
-    padding: 30,
-    height: 200,
-    textAlignVertical: 'top',
-    color: '#000',
-    borderRadius: 30,
-    
-  },
-  addButton:{
-    backgroundColor: '#0094FF',
-    alignItems: 'center',
-    borderRadius: 20,
-    margin: 20,
-    padding:20,
-    
-    textAlign:'center',
-  },
-  addButtonText:{
-    fontSize: 20,
-  },
-
-  deleteAllButton:{
-    position:'absolute',
-    
-    width:150,
-    height:60,
-    backgroundColor: '#0094FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 15,
-    left: 25,
-    bottom: 25,
-    elevation: 2,
-    zIndex: 9,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset:{
-      width: 1,
-      height: 3,
-    }
-  }
-
-  
-
-
-});
