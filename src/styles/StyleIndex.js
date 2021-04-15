@@ -27,5 +27,8 @@ export const styleIndex = StyleSheet.create({
         paddingRight: 40,
         paddingLeft: 8,
 
+    },
+    taskText:{
+        
     }
 })
