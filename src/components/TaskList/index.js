@@ -46,9 +46,10 @@ export default function TaskList({data, deletarNota,update,showToastMessage}){
             >
           <Ionicons name="md-checkmark-circle" size={45} color={color}/>
             </TouchableOpacity>
-            <View>
+            <TouchableOpacity style={styleIndex.taskText} onLongPress={()=>{alert("Alterar Texto")}}>
                 <Text style={styleIndex.task}>{data.task}</Text>
-            </View>
+                
+            </TouchableOpacity>
         </Animatable.View>
     )
 }
