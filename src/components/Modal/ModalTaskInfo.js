@@ -13,7 +13,11 @@ import {styleModalInfo} from '../../styles/StyleModalInfo'
 
 export default function ModalTaskInfo({infoVisible,setInfoVisivle}){
     return(
-        <Modal visible={infoVisible}>
+        <Modal
+        animationType={'slide'}
+        useNativeDriver
+        
+        visible={infoVisible}>
             <SafeAreaView style={styleModalInfo.modal}>
                 <View style={styleModalInfo.modalLeader}>
                     <TouchableOpacity onPress={() => {setInfoVisivle(false)}}>
