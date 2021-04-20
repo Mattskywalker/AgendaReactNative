@@ -37,6 +37,7 @@ export default function ModalWriteTask({open,setOpen,task,setTask,showToastMessa
       useNativeDriver
       transparent={false}
       visible={open}
+      onRequestClose={() => setOpen(false)}
       >
         <SafeAreaView style={styleModalWriteTask.modal}>
           <StatusBar backgroundColor='#171d31'/>
