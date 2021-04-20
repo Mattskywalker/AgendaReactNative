@@ -4,12 +4,15 @@ import {Ionicons} from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Animatable from 'react-native-animatable'
 
+import 'dayjs/locale/pt-br'
 import {styleIndex} from '../../styles/StyleIndex'
 import {taskState} from '../../enums/TaskState'
+import ModalTaskInfo from '../Modal/ModalTaskInfo'
 
-export default function TaskList({data, deletarNota,update,showToastMessage}){
 
-    const [color,setColor] = useState(data.color)
+export default function TaskList({data, deletarNota,update,showToastMessage,infoVisible,setInfoVisivle}){
+
+    const [color,setColor] = useState(data.color);
     
     function mudarCor(data){
 
@@ -46,7 +49,7 @@ export default function TaskList({data, deletarNota,update,showToastMessage}){
             >
           <Ionicons name="md-checkmark-circle" size={45} color={color}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styleIndex.taskText} onLongPress={()=>{alert("Alterar Texto")}}>
+            <TouchableOpacity style={styleIndex.taskText} onPress={()=>{setInfoVisivle(true)}}>
                 <Text style={styleIndex.task}>{data.task}</Text>
                 
             </TouchableOpacity>

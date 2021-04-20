@@ -9,18 +9,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {styleApp} from './src/styles/StyleApp'
 import ModalWriteTask from './src/components/Modal/ModalWriteTask'
+import ModalTaskInfo from './src/components/Modal/ModalTaskInfo'
 const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
 
 
 
 
 export default function App(){
-  const [task,setTask] = useState([])
-  const [open, setOpen] = useState(false)
+  const [task,setTask] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [infoVisible, setInfoVisivle] = useState(false);
   
-  
-  
-
   //carregando tarefas persistidas 
   async function loadTasks(){
     const taskStorage = await AsyncStorage.getItem('@task');
@@ -104,7 +103,7 @@ export default function App(){
   }
 
 
-  return (
+  return (//view.......
     
     <SafeAreaView style={styleApp.container}>
 
@@ -118,9 +117,14 @@ export default function App(){
       showsHorizontalScrollIndicator={false}
       data={task}
       keyExtractor={(item) => String(item.key)}
-      renderItem={({item}) => <TaskList data={item} showToastMessage={showToastMessage}
-       deletarNota={deletarNota} update={update}/>}
-
+      renderItem={({item}) => <TaskList 
+      data={item}
+      showToastMessage={showToastMessage}
+      deletarNota={deletarNota}
+      update={update}
+      infoVisible={infoVisible} setInfoVisivle={setInfoVisivle}
+      />
+      }
       />
       <AnimatableButton  useNativeDriver
       animation="bounceInUp" style={styleApp.deleteAllButton} onPress={()=>{deletarTodas()}}>
@@ -128,9 +132,13 @@ export default function App(){
       </AnimatableButton>
 
       <ModalWriteTask 
+  
       open={open} setOpen={setOpen}
       task={task} setTask={setTask}
-      showToastMessage={showToastMessage} ></ModalWriteTask>
+      showToastMessage={showToastMessage}
+      />
+
+      <ModalTaskInfo setInfoVisivle={setInfoVisivle} infoVisible={infoVisible}/>
       
       <AnimatableButton 
       style={styleApp.fab}

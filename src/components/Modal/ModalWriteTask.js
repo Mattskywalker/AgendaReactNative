@@ -3,7 +3,7 @@ import React,{useState} from 'react';
 import {Text, View, SafeAreaView,TouchableOpacity, Modal, TextInput} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
-    
+import dayjs from 'dayjs'    
 import * as Animatable from 'react-native-animatable'
 import {styleModalWriteTask} from '../../styles/StyleModalWriteTask'
 import {taskState} from '../../enums/TaskState'
@@ -13,7 +13,7 @@ const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
 export default function ModalWriteTask({open,setOpen,task,setTask,showToastMessage}){
 
   const [input, setInput] = useState('');
-
+  
 
   function salvar(){
     if(input === '')return;
@@ -22,6 +22,7 @@ export default function ModalWriteTask({open,setOpen,task,setTask,showToastMessa
       task: input,
       color: '#FFF',
       taskState: taskState.NOTFINISHED,
+      creationDate: dayjs().locale('pt-br').format('ddd, MMM D, YYYY h:mm A'),
     };
 
     setTask([...task, data]);
@@ -40,7 +41,7 @@ export default function ModalWriteTask({open,setOpen,task,setTask,showToastMessa
         <SafeAreaView style={styleModalWriteTask.modal}>
           <StatusBar backgroundColor='#171d31'/>
           <View style={styleModalWriteTask.modalLeader}>
-            <TouchableOpacity onPress={() => {setOpen(false),setInput('')}}>
+            <TouchableOpacity onPress={() => {setOpen(false), setInput('')}}>
               <Ionicons style={marginleft= 5, marginRight = 5} name="arrow-back" size={40} color='#FFF'/>
             </TouchableOpacity>
 
