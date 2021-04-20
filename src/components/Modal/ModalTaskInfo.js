@@ -1,36 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useEffect, useState} from 'react';
 import {Text, View, SafeAreaView,TouchableOpacity, Modal, TextInput, BackHandler, Alert} from 'react-native';
+import * as Animatable from 'react-native-animatable'
+
 import {Ionicons} from '@expo/vector-icons';
 
-import dayjs from 'dayjs'    
-import * as Animatable from 'react-native-animatable'
-import {styleModalWriteTask} from '../../styles/StyleModalWriteTask'
-import {taskState} from '../../enums/TaskState'
-const AnimatableTextInput = Animatable.createAnimatableComponent(TextInput)
-const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
 import {styleModalInfo} from '../../styles/StyleModalInfo'
 
+const AnimatableTextInput = Animatable.createAnimatableComponent(TextInput)
+const AnimatableButton = Animatable.createAnimatableComponent(TouchableOpacity)
+
+
 export default function ModalTaskInfo({infoVisible,setInfoVisivle}){
-
-    const backAction = () => {
-        Alert.alert("Espere!", "Tem certeza que quer sair?", [
-          {
-            text: "Cancelar",
-            onPress: () => null,
-            style: "cancel"
-          },
-          { text: "Sim", onPress: () => BackHandler.exitApp() }
-        ]);
-        return true;
-      };
-      
-      useEffect(()=>{
-        BackHandler.addEventListener('hardwareBackPress',backAction)
-    
-        return() => BackHandler.removeEventListener("hardwareBackPress",()=> backAction);
-      },[])
-
     
     return(
         <Modal
