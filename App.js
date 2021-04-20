@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useState, useCallback, useEffect} from 'react';
 import { ToastAndroid , Text, View, SafeAreaView,TouchableOpacity,
-   FlatList, Modal, Alert} from 'react-native';
+   FlatList, Modal, Alert, BackHandler} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import TaskList from './src/components/TaskList';
 import * as Animatable from 'react-native-animatable'
@@ -20,7 +20,8 @@ export default function App(){
   const [open, setOpen] = useState(false);
   const [infoVisible, setInfoVisivle] = useState(false);
   
-  //carregando tarefas persistidas 
+  //carregando tarefas persistidas
+  
   async function loadTasks(){
     const taskStorage = await AsyncStorage.getItem('@task');
     
@@ -32,6 +33,23 @@ export default function App(){
   async function saveTasks(){
     await AsyncStorage.setItem('@task',JSON.stringify(task));
   }
+  const backAction = () => {
+    Alert.alert("Espere!", "Tem certeza que quer sair?", [
+      {
+        text: "Cancelar",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "Sim", onPress: () => BackHandler.exitApp() }
+    ]);
+    return true;
+  };
+  
+  useEffect(()=>{
+    BackHandler.addEventListener('hardwareBackPress',backAction)
+
+    return() => BackHandler.removeEventListener("hardwareBackPress", backAction);
+  },[])
   
   useEffect(()=>{
 
